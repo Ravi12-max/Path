@@ -1,0 +1,408 @@
+<title>Pehla Raasta</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600&family=Tiro+Devanagari+Hindi&display=swap">
+<style>
+  /* Layout: one narrow left-aligned column. A trail of five named stops sits above the screen; one thing is on screen at a time. */
+  :root {
+    --bg: #F2F4F0;
+    --surface: #FFFFFF;
+    --fg: #17211D;
+    --muted: #55645D;
+    --line: #D3DAD3;
+    --accent: #0E6A5E;
+    --accent-fg: #FFFFFF;
+    --warm: #A95F14;
+    --font-display: "Tiro Devanagari Hindi", Georgia, "Times New Roman", serif;
+    --font-body: "Mukta", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1513; --surface: #17201C; --fg: #E5ECE7; --muted: #9AA9A1;
+      --line: #2A3731; --accent: #5CC7B6; --accent-fg: #08201B; --warm: #E0A15A;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1513; --surface: #17201C; --fg: #E5ECE7; --muted: #9AA9A1;
+    --line: #2A3731; --accent: #5CC7B6; --accent-fg: #08201B; --warm: #E0A15A;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.6;
+    padding-block: 20px 40px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .wrap { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+  button, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .brand { font-family: var(--font-display); font-size: 1.35rem; margin: 0; }
+  .lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--surface); }
+  .lang button { border: 0; background: transparent; padding: 4px 14px; border-radius: 999px; cursor: pointer; color: var(--muted); font-size: 0.95rem; }
+  .lang button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); }
+
+  /* Trail */
+  .trail { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .trail li { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .trail .bar { height: 4px; border-radius: 4px; background: var(--line); }
+  .trail .name { font-size: 0.78rem; letter-spacing: 0.02em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .trail li.done .bar { background: var(--accent); opacity: 0.55; }
+  .trail li.now .bar { background: var(--accent); }
+  .trail li.now .name { color: var(--fg); font-weight: 600; }
+  .stepcount { margin: 0; font-size: 0.9rem; color: var(--muted); }
+
+  main { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+  h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.9rem, 6.5vw, 2.6rem); line-height: 1.2; margin: 0; text-wrap: balance; }
+  h1:focus { outline: none; }
+  .lead { margin: 0; color: var(--muted); max-width: 60ch; }
+  p { margin: 0; }
+
+  .btnrow { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { border: 1px solid var(--accent); background: var(--accent); color: var(--accent-fg); padding: 11px 24px; border-radius: 10px; cursor: pointer; font-weight: 600; }
+  .btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); font-weight: 400; }
+  .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+
+  /* World terms */
+  .terms { margin: 0; display: flex; flex-direction: column; }
+  .terms > div { padding-block: 14px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 110px 1fr; gap: 6px 16px; }
+  .terms > div:last-child { border-bottom: 1px solid var(--line); }
+  .terms dt { font-family: var(--font-display); font-size: 1.25rem; color: var(--accent); }
+  .terms dd { margin: 0; min-width: 0; }
+  @media (max-width: 480px) { .terms > div { grid-template-columns: 1fr; } }
+
+  /* Options */
+  .opts { display: flex; flex-direction: column; gap: 10px; border: 0; margin: 0; padding: 0; min-width: 0; }
+  .opt { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; cursor: pointer; min-width: 0; }
+  .opt input { margin-top: 7px; accent-color: var(--accent); width: 18px; height: 18px; flex: none; }
+  .opt:has(input:checked) { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .opt:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .qtag { margin: 0; font-size: 0.9rem; color: var(--warm); font-weight: 600; letter-spacing: 0.03em; }
+
+  /* Paths */
+  .path-top { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .path-name { font-family: var(--font-display); font-size: 1.3rem; }
+  .match { font-size: 0.85rem; color: var(--warm); font-weight: 600; }
+  .pc { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px 24px; margin-top: 10px; font-size: 0.95rem; }
+  .pc h3 { margin: 0 0 4px; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .pc ul { margin: 0; padding-left: 18px; }
+  .opt .body { min-width: 0; flex: 1; }
+
+  .action { border-left: 4px solid var(--accent); padding: 4px 0 4px 18px; font-size: 1.15rem; }
+  .after { color: var(--muted); }
+
+  footer { border-top: 1px solid var(--line); padding-top: 16px; font-size: 0.92rem; color: var(--muted); }
+  footer strong { color: var(--fg); font-variant-numeric: tabular-nums; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    main > * { animation: rise 0.28s ease-out both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="brand" id="brand"></p>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="l-hi" aria-pressed="true">हिन्दी</button>
+      <button type="button" id="l-en" aria-pressed="false">English</button>
+    </div>
+  </header>
+
+  <nav aria-label="Progress">
+    <ol class="trail" id="trail"></ol>
+  </nav>
+
+  <main id="main"></main>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+(function () {
+  var D = {
+    hi: {
+      brand: "पहला रास्ता",
+      stepOf: function (n) { return "कदम " + n + " / 5"; },
+      trail: ["स्वागत", "दुनिया", "तुम", "रास्ते", "कदम"],
+      next: "आगे", back: "पीछे",
+      s1: {
+        h: "नए हो? कोई बात नहीं।",
+        lead: "यहाँ कोई लॉगिन नहीं है और कोई जवाब सही या गलत नहीं है। पाँच छोटे कदम हैं, और हर कदम पर बस एक चीज़ सामने आती है। जब चाहो रुक सकते हो। लगभग 5 मिनट लगेंगे।",
+        go: "शुरू करें"
+      },
+      s2: {
+        h: "दुनिया क्या है?",
+        lead: "पाँच चीज़ें जो ज़्यादातर लोगों की ज़िंदगी बनाती हैं। इन्हें बस पढ़ लो, याद करना ज़रूरी नहीं।",
+        items: [
+          ["इंसान", "हम सब इंसान हैं। हर किसी को खाना, घर, सुरक्षा और अपनापन चाहिए। यहीं से बाकी सब शुरू होता है।"],
+          ["रिश्ते", "परिवार, दोस्त, पड़ोसी। इनसे हमें मदद मिलती है और हम भी इन्हें मदद देते हैं। बात करना सबसे पुराना हुनर है।"],
+          ["पैसा", "पैसा एक औज़ार है। उससे हम खाना, किराया और सफ़र जैसी चीज़ें लेते हैं। लोग उसे काम करके कमाते हैं।"],
+          ["काम", "काम वह है जो हम दूसरों के लिए करते हैं और बदले में पैसा या सम्मान पाते हैं। दुनिया में हज़ारों तरह के काम हैं।"],
+          ["समाज", "समाज के कुछ नियम हैं: कानून, तमीज़, आपसी भरोसा। इन्हें जानने से रास्ता आसान हो जाता है।"]
+        ]
+      },
+      s3: {
+        h: "तुम क्या महसूस करते हो?",
+        lead: "तीन सवाल। जो पहले मन में आए, वही चुनो।",
+        qOf: function (i) { return "सवाल " + (i + 1) + " / 3"; },
+        last: "रास्ते देखें",
+        qs: [
+          { q: "किस चीज़ में समय का पता नहीं चलता?", o: [
+            ["कुछ नया जानना या पढ़ना", "learn"],
+            ["हाथ से कुछ बनाना या ठीक करना", "make"],
+            ["किसी की मदद करना या लोगों से बातें करना", "people"],
+            ["चीज़ों को सँभालना, हिसाब रखना, योजना बनाना", "manage"] ] },
+          { q: "किस चीज़ को देखकर जिज्ञासा होती है?", o: [
+            ["चीज़ें कैसे और क्यों काम करती हैं", "learn"],
+            ["किसी चीज़ का बनते हुए दिखना", "make"],
+            ["लोग एक-दूसरे से कैसे जुड़ते हैं", "people"],
+            ["दुकानें और कारोबार कैसे चलते हैं", "manage"] ] },
+          { q: "किस बात से सबसे ज़्यादा डर लगता है?", o: [
+            ["कुछ न समझ पाना", "learn"],
+            ["कुछ करके दिखा न पाना", "make"],
+            ["अकेले पड़ जाना", "people"],
+            ["पैसे या सुरक्षा की कमी", "manage"] ] }
+        ]
+      },
+      s4: {
+        h: "तुम्हारे रास्ते",
+        lead: "ये चार रास्ते हैं। कोई एक सही नहीं है। जो रास्ता तुम्हारे जवाबों से ज़्यादा मेल खाता है, वह ऊपर है। एक चुनो, बाद में बदल सकते हो।",
+        pros: "फ़ायदे", cons: "नुकसान",
+        match: function (n) { return "तुम्हारे 3 में से " + n + " जवाब इस ओर"; },
+        go: "यह रास्ता चुनें",
+        paths: {
+          learn: { n: "सीखना और समझना", d: "पढ़ाई, शोध, भाषाएँ, विज्ञान, कला का अध्ययन।",
+            p: ["गहरी समझ बनती है", "कई दरवाज़े खुलते हैं"], c: ["कमाई शुरू होने में समय लगता है", "अकेले पढ़ना भारी लग सकता है"] },
+          make: { n: "हाथ का हुनर", d: "ऐसा काम सीखना जिसमें कुछ बनता या ठीक होता है: सिलाई, बिजली का काम, कोडिंग, खाना, खेती।",
+            p: ["नतीजा अपनी आँख से दिखता है", "हुनर की माँग हमेशा रहती है"], c: ["शुरू में मेहनत ज़्यादा लगती है", "शरीर और समय पर बोझ पड़ सकता है"] },
+          people: { n: "लोगों के साथ काम", d: "सेवा, पढ़ाना, स्वास्थ्य, बिक्री, समुदाय का काम।",
+            p: ["रिश्ते और भरोसा बनता है", "काम का मतलब साफ़ महसूस होता है"], c: ["दूसरों की ज़रूरतों से थकान हो सकती है", "कमाई हर जगह बराबर नहीं होती"] },
+          manage: { n: "कमाई और व्यवस्था", d: "नौकरी, छोटा कारोबार, हिसाब-किताब, योजना बनाना।",
+            p: ["आर्थिक सुरक्षा जल्दी बनती है", "आगे बढ़ने के रास्ते साफ़ होते हैं"], c: ["सिर्फ़ पैसे के पीछे भागने का खतरा", "ज़िम्मेदारी का दबाव"] }
+        }
+      },
+      s5: {
+        h: "तुम्हारा पहला कदम",
+        lead: function (n) { return "तुमने चुना: " + n + "। आज ही, 20 मिनट से कम में, यह करो:"; },
+        actions: {
+          learn: "एक विषय चुनो जिसके बारे में जानना चाहते हो। उस पर एक मुफ़्त वीडियो देखो या लेख पढ़ो, और तीन बातें लिख लो।",
+          make: "कोई ऐसा हुनर चुनो जो तुमने किसी को करते देखा हो। उनसे पूछो कि उन्होंने कैसे सीखा और पहला कदम क्या था।",
+          people: "जिस इंसान का काम तुम्हें पसंद आता है, उससे 10 मिनट बात करो। पूछो: आपका दिन कैसा गुज़रता है?",
+          manage: "इस हफ़्ते का अपना खर्च कागज़ पर लिखो, हर चीज़ के आगे रकम। इससे पैसे की तस्वीर साफ़ हो जाएगी।"
+        },
+        after: "करने के बाद खुद से पूछो: क्या अच्छा लगा? क्या मुश्किल लगा? अगला कदम इन्हीं जवाबों से निकलेगा।",
+        other: "दूसरा रास्ता देखें", restart: "शुरू से"
+      },
+      help: "बहुत भारी या अकेला लग रहा है? Tele-MANAS पर <strong>14416</strong> डायल करें। यह मुफ़्त है और चौबीसों घंटे चलता है।"
+    },
+    en: {
+      brand: "Pehla Raasta",
+      stepOf: function (n) { return "Step " + n + " of 5"; },
+      trail: ["Welcome", "World", "You", "Paths", "Step"],
+      next: "Next", back: "Back",
+      s1: {
+        h: "New here? That is fine.",
+        lead: "There is no login and no answer is right or wrong. There are five short steps, and only one thing shows at a time. You can stop whenever you like. It takes about 5 minutes.",
+        go: "Start"
+      },
+      s2: {
+        h: "What is the world?",
+        lead: "Five things that make up most people's lives. Just read them. You do not need to remember anything.",
+        items: [
+          ["People", "We are all people. Everyone needs food, a home, safety and belonging. Everything else starts from here."],
+          ["Relationships", "Family, friends, neighbours. They help us and we help them. Talking to each other is the oldest skill we have."],
+          ["Money", "Money is a tool. With it we get food, rent and travel. People earn it by working."],
+          ["Work", "Work is what we do for others, and in return we get money or respect. There are thousands of kinds of work."],
+          ["Society", "Society has rules: laws, manners, mutual trust. Knowing them makes the road easier."]
+        ]
+      },
+      s3: {
+        h: "What do you feel?",
+        lead: "Three questions. Pick whatever comes to mind first.",
+        qOf: function (i) { return "Question " + (i + 1) + " of 3"; },
+        last: "See paths",
+        qs: [
+          { q: "What makes you lose track of time?", o: [
+            ["Learning or reading something new", "learn"],
+            ["Making or fixing something by hand", "make"],
+            ["Helping someone or talking with people", "people"],
+            ["Organising things, keeping accounts, planning", "manage"] ] },
+          { q: "What makes you curious?", o: [
+            ["How and why things work", "learn"],
+            ["Watching something get made", "make"],
+            ["How people connect with each other", "people"],
+            ["How shops and businesses run", "manage"] ] },
+          { q: "What scares you the most?", o: [
+            ["Not being able to understand", "learn"],
+            ["Not being able to show what I can do", "make"],
+            ["Being left alone", "people"],
+            ["Not having enough money or security", "manage"] ] }
+        ]
+      },
+      s4: {
+        h: "Your paths",
+        lead: "These are four paths. None is the right one. The path that matches your answers more is at the top. Pick one. You can change it later.",
+        pros: "Upsides", cons: "Downsides",
+        match: function (n) { return n + " of your 3 answers point here"; },
+        go: "Choose this path",
+        paths: {
+          learn: { n: "Learning and understanding", d: "Study, research, languages, science, the study of art.",
+            p: ["You build deep understanding", "Many doors open up"], c: ["Earning takes longer to start", "Studying alone can feel heavy"] },
+          make: { n: "Skill of the hands", d: "Learning work where something gets made or fixed: tailoring, electrical work, coding, cooking, farming.",
+            p: ["You see the result with your own eyes", "Skills stay in demand"], c: ["Learning takes a lot of effort at first", "It can strain the body and time"] },
+          people: { n: "Working with people", d: "Service, teaching, health, sales, community work.",
+            p: ["You build relationships and trust", "The meaning of the work feels clear"], c: ["Other people's needs can be tiring", "Pay is not equal everywhere"] },
+          manage: { n: "Earning and organising", d: "A job, a small business, accounts, planning.",
+            p: ["Financial security comes sooner", "The ways to move up are clear"], c: ["The risk of chasing only money", "Pressure of responsibility"] }
+        }
+      },
+      s5: {
+        h: "Your first step",
+        lead: function (n) { return "You chose: " + n + ". Today, in under 20 minutes, do this:"; },
+        actions: {
+          learn: "Pick one subject you want to know about. Watch a free video or read an article on it, and write down three things.",
+          make: "Pick a skill you have seen someone doing. Ask them how they learned it and what their first step was.",
+          people: "Talk for 10 minutes with someone whose work you like. Ask: what does your day look like?",
+          manage: "Write down this week's spending on paper, with the amount next to each item. It makes the picture of your money clear."
+        },
+        after: "Afterwards ask yourself: what felt good? What felt hard? Your next step will come from those answers.",
+        other: "See another path", restart: "Start over"
+      },
+      help: "Feeling too heavy or alone? Call Tele-MANAS on <strong>14416</strong>. It is free and runs around the clock."
+    }
+  };
+
+  var PATH_ORDER = ["learn", "make", "people", "manage"];
+  var lang = "hi", step = 0, qi = 0, answers = [], chosen = null, pending = null;
+
+  try { var saved = localStorage.getItem("pr-lang"); if (saved === "hi" || saved === "en") lang = saved; } catch (e) {}
+
+  var $main = document.getElementById("main");
+
+  function T() { return D[lang]; }
+
+  function scores() {
+    var s = { learn: 0, make: 0, people: 0, manage: 0 };
+    answers.forEach(function (a) { if (a) s[a]++; });
+    return s;
+  }
+
+  function el(html) { var d = document.createElement("div"); d.innerHTML = html; return d; }
+
+  function drawChrome() {
+    var t = T();
+    document.documentElement.lang = lang;
+    document.getElementById("brand").textContent = t.brand;
+    document.getElementById("l-hi").setAttribute("aria-pressed", lang === "hi");
+    document.getElementById("l-en").setAttribute("aria-pressed", lang === "en");
+    var trail = document.getElementById("trail");
+    trail.innerHTML = t.trail.map(function (n, i) {
+      var c = i < step ? "done" : i === step ? "now" : "";
+      return '<li class="' + c + '"' + (i === step ? ' aria-current="step"' : "") + '><span class="bar"></span><span class="name">' + n + "</span></li>";
+    }).join("");
+    document.getElementById("foot").innerHTML = t.help;
+  }
+
+  function view() {
+    var t = T(), h = "";
+    var stepLine = '<p class="stepcount">' + t.stepOf(step + 1) + "</p>";
+
+    if (step === 0) {
+      h = stepLine + '<h1 tabindex="-1">' + t.s1.h + '</h1><p class="lead">' + t.s1.lead + '</p>' +
+        '<div class="btnrow"><button class="btn" data-go="1">' + t.s1.go + "</button></div>";
+    }
+
+    else if (step === 1) {
+      h = stepLine + '<h1 tabindex="-1">' + t.s2.h + '</h1><p class="lead">' + t.s2.lead + "</p><dl class=\"terms\">" +
+        t.s2.items.map(function (i) { return "<div><dt>" + i[0] + "</dt><dd>" + i[1] + "</dd></div>"; }).join("") +
+        '</dl><div class="btnrow"><button class="btn ghost" data-go="0">' + t.back + '</button><button class="btn" data-go="2">' + t.next + "</button></div>";
+    }
+
+    else if (step === 2) {
+      var q = t.s3.qs[qi];
+      var isLast = qi === t.s3.qs.length - 1;
+      h = stepLine + '<h1 tabindex="-1">' + t.s3.h + '</h1>' + (qi === 0 ? '<p class="lead">' + t.s3.lead + "</p>" : "") +
+        '<p class="qtag">' + t.s3.qOf(qi) + '</p>' +
+        '<fieldset class="opts"><legend style="font-size:1.2rem;font-weight:600;margin-bottom:12px;padding:0">' + q.q + "</legend>" +
+        q.o.map(function (o, i) {
+          var on = answers[qi] === o[1] ? " checked" : "";
+          return '<label class="opt"><input type="radio" name="q" value="' + o[1] + '"' + on + '><span>' + o[0] + "</span></label>";
+        }).join("") + "</fieldset>" +
+        '<div class="btnrow"><button class="btn ghost" data-qback="1">' + t.back + '</button><button class="btn" id="qnext"' + (answers[qi] ? "" : " disabled") + ">" + (isLast ? t.s3.last : t.next) + "</button></div>";
+    }
+
+    else if (step === 3) {
+      var sc = scores();
+      var order = PATH_ORDER.slice().sort(function (a, b) { return sc[b] - sc[a]; });
+      if (!pending) pending = chosen;
+      h = stepLine + '<h1 tabindex="-1">' + t.s4.h + '</h1><p class="lead">' + t.s4.lead + '</p><fieldset class="opts"><legend class="lead" style="position:absolute;left:-9999px">' + t.s4.h + "</legend>" +
+        order.map(function (k) {
+          var p = t.s4.paths[k];
+          return '<label class="opt"><input type="radio" name="path" value="' + k + '"' + (pending === k ? " checked" : "") + '><span class="body"><span class="path-top"><span class="path-name">' + p.n + "</span>" +
+            (sc[k] > 0 ? '<span class="match">' + t.s4.match(sc[k]) + "</span>" : "") + "</span>" +
+            "<span style=\"display:block;margin-top:4px\">" + p.d + "</span>" +
+            '<span class="pc"><span><h3>' + t.s4.pros + "</h3><ul>" + p.p.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul></span>" +
+            "<span><h3>" + t.s4.cons + "</h3><ul>" + p.c.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul></span></span></span></label>";
+        }).join("") + "</fieldset>" +
+        '<div class="btnrow"><button class="btn ghost" data-go="2">' + t.back + '</button><button class="btn" id="pick"' + (pending ? "" : " disabled") + ">" + t.s4.go + "</button></div>";
+    }
+
+    else {
+      var pn = t.s4.paths[chosen].n;
+      h = stepLine + '<h1 tabindex="-1">' + t.s5.h + '</h1><p class="lead">' + t.s5.lead(pn) + '</p>' +
+        '<p class="action">' + t.s5.actions[chosen] + '</p><p class="after">' + t.s5.after + '</p>' +
+        '<div class="btnrow"><button class="btn ghost" data-go="3">' + t.s5.other + '</button><button class="btn ghost" id="restart">' + t.s5.restart + "</button></div>";
+    }
+    return h;
+  }
+
+  function render(focus) {
+    drawChrome();
+    $main.innerHTML = view();
+    if (focus) { var h1 = $main.querySelector("h1"); if (h1) h1.focus({ preventScroll: true }); window.scrollTo(0, 0); }
+  }
+
+  function go(n) {
+    step = n;
+    if (n === 2) { qi = 0; }
+    if (n === 3) { pending = chosen; }
+    render(true);
+  }
+
+  $main.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    if (b.hasAttribute("data-go")) { go(parseInt(b.getAttribute("data-go"), 10)); return; }
+    if (b.hasAttribute("data-qback")) { if (qi > 0) { qi--; render(false); } else { go(1); } return; }
+    if (b.id === "qnext") {
+      if (qi < T().s3.qs.length - 1) { qi++; render(false); } else { go(3); }
+      return;
+    }
+    if (b.id === "pick" && pending) { chosen = pending; go(4); return; }
+    if (b.id === "restart") { answers = []; chosen = null; pending = null; qi = 0; go(0); }
+  });
+
+  $main.addEventListener("change", function (e) {
+    var i = e.target;
+    if (i.name === "q") { answers[qi] = i.value; document.getElementById("qnext").disabled = false; }
+    if (i.name === "path") { pending = i.value; document.getElementById("pick").disabled = false; }
+  });
+
+  function setLang(l) {
+    lang = l;
+    try { localStorage.setItem("pr-lang", l); } catch (e) {}
+    render(false);
+  }
+  document.getElementById("l-hi").addEventListener("click", function () { setLang("hi"); });
+  document.getElementById("l-en").addEventListener("click", function () { setLang("en"); });
+
+  render(false);
+})();
+</script>
